@@ -28,6 +28,6 @@ class User {
         }
 
     fun validatePassword(password: String): Boolean {
-        return this.password == BCryptPasswordEncoder().encode(password)
+        return BCryptPasswordEncoder().matches(password, this.password)
     }
 }
