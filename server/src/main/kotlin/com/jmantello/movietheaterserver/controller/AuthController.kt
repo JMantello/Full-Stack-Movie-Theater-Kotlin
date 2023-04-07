@@ -1,6 +1,7 @@
 package com.jmantello.movietheaterserver.controller
 
-import com.jmantello.movietheaterserver.datasource.local.dto.RegisterUserDTO
+import com.jmantello.movietheaterserver.repository.dto.LoginDTO
+import com.jmantello.movietheaterserver.repository.dto.RegisterUserDTO
 import com.jmantello.movietheaterserver.model.User
 import com.jmantello.movietheaterserver.service.UserService
 import org.springframework.http.ResponseEntity
@@ -17,4 +18,15 @@ class AuthController(private val userService: UserService) {
     @PostMapping("register")
     fun registerUser(@RequestBody user: RegisterUserDTO): ResponseEntity<User> =
         userService.register(user)
+
+    @PostMapping("login")
+    fun login(@RequestBody dto: LoginDTO): ResponseEntity<Any> {
+        val user = userService.findByEmail(dto.email)
+            ?: return ResponseEntity.badRequest().body("Invalid email")
+
+        if(!user.validatePassword(dto.password))
+            return ResponseEntity.badRequest().body("Invalid password")
+
+        return ResponseEntity.ok(user)
+    }
 }

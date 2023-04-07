@@ -1,4 +1,4 @@
-package com.jmantello.movietheaterserver.datasource.local.dto
+package com.jmantello.movietheaterserver.repository.dto
 
 class RegisterUserDTO(
     var name: String,

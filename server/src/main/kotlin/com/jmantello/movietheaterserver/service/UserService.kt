@@ -1,20 +1,22 @@
 package com.jmantello.movietheaterserver.service
 
+import com.jmantello.movietheaterserver.repository.UserRepository
 import com.jmantello.movietheaterserver.model.User
-import com.jmantello.movietheaterserver.datasource.local.UserRepository
-import com.jmantello.movietheaterserver.datasource.local.dto.RegisterUserDTO
+import com.jmantello.movietheaterserver.repository.dto.RegisterUserDTO
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 @Service
-class UserService(private val userService: UserRepository) {
+class UserService(private val userRepository: UserRepository) {
 
     fun register(dto: RegisterUserDTO): ResponseEntity<User> {
         val user = User()
-        user.name = dto.name
         user.email = dto.email
+        // Check if email unique
+        user.name = dto.name
         user.password = dto.password
-        
-        return ResponseEntity.ok(this.userService.save(user))
+        return ResponseEntity.ok(userRepository.save(user))
     }
+
+    fun findByEmail(email: String): User? = userRepository.findByEmail(email)
 }
