@@ -1,5 +1,6 @@
 package com.jmantello.movietheaterserver.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -22,7 +23,8 @@ class User {
 
     @Column
     var password: String = ""
-        // get() = throw AttributeExtractionException("Password is non-readable")
+        @JsonIgnore
+        get() = field
         set(value) {
             field = BCryptPasswordEncoder().encode(value)
         }
