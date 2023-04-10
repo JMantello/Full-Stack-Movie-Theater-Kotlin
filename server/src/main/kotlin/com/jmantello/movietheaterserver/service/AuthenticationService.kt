@@ -6,10 +6,12 @@ import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import jakarta.servlet.http.Cookie
 import org.springframework.http.ResponseEntity
+import org.springframework.stereotype.Service
 import java.security.Key
 import java.util.*
 import javax.crypto.KeyGenerator
 
+@Service
 class AuthenticationService(private val userService: UserService) {
     // Creates random secret key to sign jwt with
     final val base64EncodedSecretKey =
