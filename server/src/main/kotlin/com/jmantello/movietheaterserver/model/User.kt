@@ -6,11 +6,10 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
-import org.hibernate.jpa.internal.util.PersistenceUtilHelper.AttributeExtractionException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @Entity
-class User {
+class User { // Could I make this into a data class?
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Int = 0
@@ -28,6 +27,8 @@ class User {
         set(value) {
             field = BCryptPasswordEncoder().encode(value)
         }
+
+    var watchHistory: MutableList<Int> = mutableListOf()
 
     fun validatePassword(password: String): Boolean {
         return BCryptPasswordEncoder().matches(password, this.password)

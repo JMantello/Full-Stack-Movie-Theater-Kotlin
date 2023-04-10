@@ -12,28 +12,22 @@ function Feed(props) {
     const [feed, setFeed] = useState([])
     const [genres, setGenres] = useState([])
 
-    async function fetchFeed() {
+    async function fetchTrending() {
         try {
             // POST feed reqeust
-            const response = await fetch(`${apiURL}/feed`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(session)
-            });
+            const response = await fetch(`${apiURL}/movies/trending`);
 
-            const responseData = await response.json()
-            setFeed(responseData)
+            const trendingData = await response.json()
+            setFeed(trendingData)
 
         } catch (err) {
-            console.log("Error with posting request to feed", err)
+            console.log("Error with posting request to api/movies/trending", err)
         }
     }
 
     async function fetchGenres() {
         try {
-            const response = await fetch(`${apiURL}/genre`)
+            const response = await fetch(`${apiURL}/movies/genre`)
             const responseData = await response.json()
             setGenres(responseData)
 
@@ -43,7 +37,7 @@ function Feed(props) {
     }
 
     useEffect(() => {
-        fetchFeed();
+        fetchTrending();
         fetchGenres();
     }, [])
 
@@ -131,19 +125,20 @@ function Feed(props) {
         {feed.length === 0 || genres.length === 0 ? (
             <LoadingSpinner />
         ) : (
-            <div className="feed-body">
-                <h2 className="mt-5 p-1">Featured Content</h2>
-                <Carousel
-                    responsive={featuredResponsive}
-                    infinite={true}
-                    autoPlay={true}
-                    autoPlaySpeed={8000}
-                >
-                    {featuredContent()}
-                </Carousel>
-                {genres.map(g => (categoryCarousel(g)))}
-                <br />
-            </div>
+            console.log(feed)
+            // <div className="feed-body">
+            //     <h2 className="mt-5 p-1">Featured Content</h2>
+            //     <Carousel
+            //         responsive={featuredResponsive}
+            //         infinite={true}
+            //         autoPlay={true}
+            //         autoPlaySpeed={8000}
+            //     >
+            //         {featuredContent()}
+            //     </Carousel>
+            //     {genres.map(g => (categoryCarousel(g)))}
+            //     <br />
+            // </div>
         )}
     </div>
     )

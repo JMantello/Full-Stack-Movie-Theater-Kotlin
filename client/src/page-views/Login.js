@@ -5,9 +5,8 @@ import Button from 'react-bootstrap/Button'
 import apiURL from "../api";
 
 function Login(props) {
-    const { setSession } = props
     const [inputs, setInputs] = useState({
-        email: "jman@email.com", password: "letmein"
+        email: "jm@email.com", password: "123"
     })
 
     const changeInput = (e) => {
@@ -27,17 +26,17 @@ function Login(props) {
 
         try {
             // POST Login reqeust
-            const response = await fetch(`${apiURL}/login`, {
+            const response = await fetch(`${apiURL}/auth/login`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify(loginData)
             });
 
-            // Get a session token from response
-            const session = await response.json()
-            setSession(session)
+            // Get a user object from response
+            const responseData = await response.json()
+            console.log(responseData)
             navigate("/feed", { replace: true })
 
         } catch (err) {
