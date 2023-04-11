@@ -2,10 +2,8 @@ package com.jmantello.movietheaterserver.controller
 
 import com.jmantello.movietheaterserver.repository.dto.LoginDTO
 import com.jmantello.movietheaterserver.repository.dto.RegisterUserDTO
-import com.jmantello.movietheaterserver.service.AuthenticationService
+import com.jmantello.movietheaterserver.service.TokenService
 import com.jmantello.movietheaterserver.service.UserService
-import io.jsonwebtoken.io.Decoders
-import io.jsonwebtoken.security.Keys
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.ResponseEntity
@@ -16,15 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.security.Key
 import java.util.*
-import javax.crypto.KeyGenerator
 
 
 @RestController
 @CrossOrigin("http://localhost:3000")
-@RequestMapping("api/auth")
-class AuthenticationController(private val userService: UserService, private val authenticationService: AuthenticationService) {
+@RequestMapping("api")
+class AuthenticationController(private val userService: UserService, private val tokenService: TokenService) {
 
     @PostMapping("register")
     fun registerUser(@RequestBody registerUserDTO: RegisterUserDTO): ResponseEntity<Any> {
@@ -45,17 +41,20 @@ class AuthenticationController(private val userService: UserService, private val
         if(!user.validatePassword(dto.password))
             return ResponseEntity.badRequest().body("Invalid password")
 
-        val cookie = authenticationService.issueCookie(user.id)
+        val token = tokenService.createToken(user)
+        val cookie = Cookie("jwt", token)
+        cookie.isHttpOnly = true
+        cookie.path = "/"
         response.addCookie(cookie)
 
         return ResponseEntity.ok("Successfully logged in")
     }
 
-    @GetMapping("user")
-    fun getUser(@CookieValue("jwt") jwt: String?): ResponseEntity<Any> {
-        val user = authenticationService.getUser(jwt)
-        return ResponseEntity.ok(user)
-    }
+//    @GetMapping("user")
+//    fun getUser(@CookieValue("jwt") jwt: String?): ResponseEntity<Any> {
+//        val user = tokenService.getUser(jwt)
+//        return ResponseEntity.ok(user)
+//    }
 
     @PostMapping("logout")
     fun logout(response: HttpServletResponse): ResponseEntity<Any> {
